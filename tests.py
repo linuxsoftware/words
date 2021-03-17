@@ -228,9 +228,23 @@ class TestWord(unittest.TestCase):
         self.assertCountEqual(w1.sharedLetters(w2), "zg")
 
 #---------------------------------------------------------------------------
+class Catalog:
+    data = {
+        '___':      ["the", "was", "you", "dog"],
+        '____':     ["duck", "path", "seat", "post", "shot", "grey"],
+        '__11__':   ["happen", "kitten", "yellow"],
+        '1_221_':   ["little", "hidden"],
+        }
+    def count(self, pattern, glob=None):
+        return len(self.words(pattern))
+    def words(self, pattern, glob=None):
+        pattern = str(pattern)
+        return self.data.get(pattern, [pattern]*9)
+
 class TestSolver(unittest.TestCase):
     def setUp(self):
-        self.solver = Solver("gur yvggyr xvggra jnf oynpx", "")
+        cat = Catalog()
+        self.solver = Solver(cat, "gur yvggyr xvggra jnf oynpx", "")
 
     def testInit(self):
         words = self.solver.words
