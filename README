@@ -6,7 +6,8 @@ It will only work with simple-substitution ciphers (aka aristocrats).
 
 COMPATABILITY
 =============
-Pure standard python, no extra packages needed.  Tested with Python 3.7.  Other Python versions > 3.4 may work.
+Pure standard python, no extra packages needed.  Tested with Python 3.7.  Other 
+Python versions > 3.4 may work.
 
 WSBUILD
 =======
