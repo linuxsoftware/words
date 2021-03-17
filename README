@@ -6,8 +6,7 @@ It will only work with simple-substitution ciphers (aka aristocrats).
 
 COMPATABILITY
 =============
-Pure standard python, no extra packages needed.  Tested with Python 3.7.  Other Python
-versions may work.
+Pure standard python, no extra packages needed.  Tested with Python 3.7.  Other Python versions > 3.4 may work.
 
 WSBUILD
 =======
@@ -35,7 +34,8 @@ e.g.  ./wssolve.py catalog.db
 It will prompt you to enter the cryptogram.  Punctuation can be entered and will be
 ignored, except that contractions with ' are accepted as valid words.
 
-Next it will prompt for any known letters.  These can be entered in two possible formats:
+Next it will prompt for any known letters.  These can be entered in one of two
+possible formats:
 
 1. Letter pairs: e.g. X=E M=J etc
 
