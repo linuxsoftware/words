@@ -528,16 +528,15 @@ class Solver:
 
     def _printColumns(self):
         height = max((len(word.guesses) for word in self.words))
-        widths = [len(word.crypted) for word in self.words]
+        spaces = [" " * len(word.crypted) for word in self.words]
         for y in range(height):
             for x in range(len(self.words)):
                 word = self.words[x]
                 if y < len(word.guesses):
                     guess = word.guesses[y]
                 else:
-                    guess = ""
-                spaces = " " * (widths[x] - len(guess))
-                print(guess, spaces, end='')
+                    guess = spaces[x]
+                print(guess+" ", end='')
             print()
 
     def _printProduct(self):
