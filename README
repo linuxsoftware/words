@@ -67,6 +67,13 @@ nudge                 plan                 up it
                       than                 uv                    
                       what 
 
+BUGS/TODO
+=========
+Automatically try different catalogs
+Don't let prepare process words with no possible decrypts
+Option to brute force cipher
+More tests
+
 COPYRIGHT
 =========
 David Moore 2021.
