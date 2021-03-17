@@ -42,7 +42,7 @@ Next it will prompt for any known letters.  These can be entered in two possible
 2. Valid text matching letter for letter with the cryptogram above.  Use spaces for the
    letters that are not known.
 
-Wssolve try and solve the cryptogram and print out words that match.
+Wssolve will try and solve the cryptogram and print out words that match.
 
 Even if wssolve does not completely solve the cryptogram it may reduce the possibilities
 down to where the solution is easy to spot by the semantics and grammar.
