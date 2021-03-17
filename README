@@ -1,0 +1,74 @@
+WS/WORDS
+========
+
+This is my implementation of a cryptogram solver based on the Simon Jansen algorithm.
+It will only work with simple-substitution ciphers (aka aristocrats).
+
+COMPATABILITY
+=============
+Pure standard python, no extra packages needed.  Tested with Python 3.7.  Other Python
+versions may work.
+
+WSBUILD
+=======
+First you need to build a catalog file from a word list.  Sometimes a short word list 
+of common words is useful, sometimes a long list like /usr/share/dict/words works better.
+
+Here's some sources of words that I have found:
+ - https://gist.github.com/deekayen/4148741
+ - https://github.com/dwyl/english-words
+ - https://github.com/sujithps/Dictionary
+ - /usr/share/dict/words
+
+Build a catalog from your word list using the wsbuild command.
+
+e.g.  ./wsbuild.py words.txt catalog.db
+
+words.txt is the word list and words.db is the name for the catalog to create.
+
+WSSOLVE
+=======
+Now you can run the solver passing it the catalog you just created.
+
+e.g.  ./wssolve.py catalog.db
+
+It will prompt you to enter the cryptogram.  Punctuation can be entered and will be
+ignored, except that contractions with ' are accepted as valid words.
+
+Next it will prompt for any known letters.  These can be entered in two possible formats:
+
+1. Letter pairs: e.g. X=E M=J etc
+
+2. Valid text matching letter for letter with the cryptogram above.  Use spaces for the
+   letters that are not known.
+
+Wssolve try and solve the cryptogram and print out words that match.
+
+Even if wssolve does not completely solve the cryptogram it may reduce the possibilities
+down to where the solution is easy to spot by the semantics and grammar.
+
+EXAMPLE
+
+$ ./wssolve.py words.db 
+Enter the cryptogram:    AXSBZ OYXM EXGGZEE CO FKWP OYX KWS PY BNQZ XI NR YMSZM PY BZP NP
+Enter any known letters: W=A
+Matching 38 possible words at go 3
+Matching 38 possible words at go 4
+Filtered 0 with words in go 0
+axsbz oyxm exggzee co fkwp oyx kws py bnqz xi nr ymszm py bzp np
+Cipher axsbzoymegcfkwpnqir->[bfjn]udgeyorsc[bmn][fkptw][hl]a[nt]i[bv][kmnpv][fnqt]
+
+_udge your success _y __a_ you _ad _o gi_e u_ i_ order _o ge_ i_
+budge your success by flan you had no gibe uk if order no gen in 
+fudge              my flat     lad to give um in       to get it 
+judge              ny khan                 un iq                 
+nudge                 plan                 up it                 
+                      than                 uv                    
+                      what 
+
+COPYRIGHT
+=========
+David Moore 2021.
+Licensed under the GPL.  See LICENSE.
+
+Have fun.
