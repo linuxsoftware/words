@@ -63,7 +63,7 @@ class TestLetters(unittest.TestCase):
         self.assertFalse(l0.solved)
         l1 = Letters("a")
         self.assertTrue(l1.solved)
-        l2 = Letters("")
+        l2 = Letters("eo")
         self.assertFalse(l2.solved)
 
     def testClear(self):
@@ -134,14 +134,6 @@ class TestCipher(unittest.TestCase):
         self.assertCountEqual(x.keys(), ['y', 'v', 'g',  'r', 'x', 'a'])
         self.assertIn("i", x['v'])
 
-    # def testClear(self):
-    #     x = Cipher("yvgrx")
-    #     x['x'].assign("bdf")
-    #     x['v'].assign("iut")
-    #     x.clear("yvgr")
-    #     self.assertEqual(x['x'].bits, 0b101010)
-    #     self.assertEqual(x['y'].bits, 0b0)
-
     def testProcess(self):
         x = Cipher("yvggyr xvggra")
         x.process("yvggyr", ["eiffel", "tweets", "little", "eassel", "outtop",
@@ -159,7 +151,7 @@ class TestCipher(unittest.TestCase):
         x['g'].assign("t")
         self.assertTrue(x.solved)
 
-    def testReduce1(self):
+    def testReduce2(self):
         x = Cipher("yvggyr xvggra")
         x['v'].assign("iut")
         x['x'].assign("bdfhkmpsw")
@@ -176,7 +168,7 @@ class TestCipher(unittest.TestCase):
         self.assertTrue(x['g'].solved)
         self.assertFalse(x['v'].solved)
 
-    def testReduce2(self):
+    def testReduce3(self):
         x = Cipher("yvggyr xvggra")
         x['v'].assign("iu")
         x['x'].assign("kniu")

@@ -538,6 +538,8 @@ class Solver:
                     guess = spaces[x]
                 print(guess+" ", end='')
             print()
+            if (y+1) % 40 == 0:
+                input("Push return to continue....")
 
     def _printProduct(self):
         guesses = []
