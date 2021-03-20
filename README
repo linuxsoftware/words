@@ -24,7 +24,7 @@ Build a catalog from your word list using the wsbuild command.
 
 e.g.  ./wsbuild.py words.txt catalog.db
 
-words.txt is the word list and words.db is the name for the catalog to create.
+words.txt is the word list and catalog.db is the name for the catalog to create.
 
 WSSOLVE
 =======
