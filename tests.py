@@ -221,21 +221,22 @@ class TestWord(unittest.TestCase):
 
 #---------------------------------------------------------------------------
 class Catalog:
-    data = {
-        '___':      ["the", "was", "you", "dog"],
-        '____':     ["duck", "path", "seat", "post", "shot", "grey"],
-        '__11__':   ["happen", "kitten", "yellow"],
-        '1_221_':   ["little", "hidden"],
-        }
+    def __init__(self, data=None):
+        self.data = data or {}
     def count(self, pattern, glob=None):
         return len(self.words(pattern))
     def words(self, pattern, glob=None):
         pattern = str(pattern)
         return self.data.get(pattern, [pattern]*9)
 
-class TestSolver(unittest.TestCase):
+class TestSolverPrepare(unittest.TestCase):
     def setUp(self):
-        cat = Catalog()
+        cat = Catalog({
+        '___':      ["the", "was", "you", "dog"],
+        '____':     ["duck", "path", "seat", "post", "shot", "grey"],
+        '__11__':   ["happen", "kitten", "yellow"],
+        '1_221_':   ["little", "hidden"],
+        })
         self.solver = Solver(cat, "gur yvggyr xvggra jnf oynpx", "")
 
     def testInit(self):
@@ -253,15 +254,44 @@ class TestSolver(unittest.TestCase):
         self.assertEqual(xvggra.links, [])
         self.assertEqual(oynpx.links, [("n", jnf)])
 
+class TestSolverFilter(unittest.TestCase):
+    def setUp(self):
+        pass
+
+    def testFilterWithWords(self):
+        solver = Solver(Catalog(), "edb bc abcd", "")
+        solver.words[0].guesses = ["ula", "uta", "uti"]
+        solver.words[1].guesses = ["an", "as", "is"]
+        solver.words[2].guesses = ["mast", "mint"]
+        numFiltered = solver._filterWithWords()
+        self.assertEqual(numFiltered, 5)
+        self.assertTrue(solver.solved)
+        guess = [word.guesses[0] for word in solver.words]
+        self.assertEqual(guess, ["uta", "as", "mast"])
+
     def testFilterGuesses(self):
+        solver = Solver(self.cat, "gur yvggyr xvggra jnf oynpx", "")
         word1 = Word("oynpx")
         word1.guesses = ["black", "clunk", "plumb", "block", "flask", "slunk", "clank"]
         word2 = Word("jnf")
         word2.guesses = ["was", "bum", "daw", "cab", "bug", "ham", "bay", "day", "yam"]
         sharedLetters = "n"
-        self.solver._filterGuesses(sharedLetters, word1, word2)
+        solver._filterGuesses(sharedLetters, word1, word2)
         self.assertNotIn("block", word1.guesses)
 
+    def testFilterWithCipher(self):
+        solver = Solver(Catalog(), "zrng naq cbgngbrf", "")
+        solver.words[0].guesses = ["care", "each", "fate", "meat", "town"]
+        solver.words[1].guesses = ["and", "the", "was", "for", "not", "one"]
+        solver.words[2].guesses = ["citation", "folklore", "potatoes", "wildlife"]
+        solver.cipher['r'].assign("e")
+        solver.cipher['b'].assign("o")
+        solver.cipher['n'].assign("a")
+        numFiltered = solver._filterWithCipher()
+        self.assertEqual(numFiltered, 12)
+        self.assertTrue(solver.solved)
+        guess = [word.guesses[0] for word in solver.words]
+        self.assertEqual(guess, ["meat", "and", "potatoes"])
 
 #---------------------------------------------------------------------------
 if __name__ == "__main__":

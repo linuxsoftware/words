@@ -417,20 +417,6 @@ class Solver:
                 break
         return totalFiltered
 
-    def _filterWithCipher(self):
-        numFiltered = 0
-        for word in self.words:
-            regex = word.regex(self.cipher)
-            filtered = []
-            for guess in word.guesses:
-                if regex.fullmatch(guess):
-                    filtered.append(guess)
-            newCount = len(filtered)
-            if word.count != newCount:
-                numFiltered += word.count - newCount
-                word.guesses = filtered
-        return numFiltered
-
     def _filterWithWords(self):
         numFilteredThisGo = 0
         for i, word1 in enumerate(self.words):
@@ -504,6 +490,20 @@ class Solver:
         if word2.count != newCount2 and newCount1:
             numFiltered += word2.count - newCount2
             word2.guesses = filtered2
+        return numFiltered
+
+    def _filterWithCipher(self):
+        numFiltered = 0
+        for word in self.words:
+            regex = word.regex(self.cipher)
+            filtered = []
+            for guess in word.guesses:
+                if regex.fullmatch(guess):
+                    filtered.append(guess)
+            newCount = len(filtered)
+            if word.count != newCount:
+                numFiltered += word.count - newCount
+                word.guesses = filtered
         return numFiltered
 
     def decrypt(self):
