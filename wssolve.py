@@ -109,6 +109,8 @@ class Cipher:
                     self.map[cipherLetter] = Letters(plainLetter)
                 else:
                     self.map[cipherLetter] = Letters.all()
+        if decrypted:
+            self.reduce()
 
     def __repr__(self):
         letters = []
@@ -157,9 +159,9 @@ class Cipher:
                                .format([k for k,v in self.map.items()
                                         if len(v) == 0]))
         reductionsTotal = 0
-        for go in range(1, 26):
+        for go in range(1, 12):
             reductionsThisGo = 0
-            for n in range(1, 27-go):
+            for n in range(1, 13-go):
                 reductions = self._reduceBy(n, possiblesByLen)
                 reductionsThisGo += reductions
                 reductionsTotal  += reductions
@@ -188,6 +190,8 @@ class Cipher:
             elif lenMatching < n:
                 unreducingPossibles.extend(matchingPossibles)
             else:
+                # FIXME work on a copy of possibles and only
+                # assign if there are no errors
                 print("Homophonic substitution to {}".format(letters))
         possiblesByLen[n] = unreducingPossibles
         return reductions
@@ -313,7 +317,8 @@ class Solver:
 
     def prepare(self):
         for word in self.words:
-            word.count = self.cat.count(word.pattern)
+            glob = word.glob(self.cipher)
+            word.count = self.cat.count(word.pattern, glob)
             if word.count == 1:   # too easy
                 word.guesses = self.cat.words(word.pattern)
                 self.cipher.process(word.crypted, word.guesses)
@@ -353,11 +358,10 @@ class Solver:
             count  = self._matchLinked()
             count += self._matchUnlinked()
             self.cipher.reduce()
+            print("Matching {} possible words at go {}".format(count, go))
             if self.solved:
                 break
             if count >= prevCount:
-                print("Matching {} possible words at go {}"
-                      .format(count, go))
                 stuck += 1
                 if stuck > 1:
                     break
@@ -539,7 +543,9 @@ class Solver:
                 print(guess+" ", end='')
             print()
             if (y+1) % 40 == 0:
-                input("Push return to continue....")
+                cont = input("Type b to break, or push return to continue...")
+                if cont == 'b':
+                    break
 
     def _printProduct(self):
         guesses = []
