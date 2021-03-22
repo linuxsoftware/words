@@ -11,6 +11,7 @@ from operator import attrgetter, itemgetter
 from pathlib import Path
 from pprint import pprint
 import re
+import readline
 from wsutils import Pattern, Catalog
 
 #---------------------------------------------------------------------------

@@ -1,8 +1,8 @@
 WS/WORDS
 ========
 
-This is my implementation of a cryptogram solver,
-It will only work with simple-substitution ciphers (aka aristocrats).
+This is my implementation of a cryptogram solver, It will only work with 
+simple-substitution ciphers (aka aristocrats).
 
 CREDIT
 ======
@@ -72,10 +72,12 @@ nudge                 plan                 up it
                       than                 uv                    
                       what 
 
-BUGS/TODO
-=========
+BUGS/TO DO
+==========
 Automatically try different catalogs
-Don't let prepare process words with no possible decrypts
+Drop words and backtrack when matching or filtering gives no solution
+Run multiple attempts starting on different words
+Add a history of past inputs using readline
 Option to brute force cipher
 More tests
 
