@@ -1,18 +1,23 @@
 WS/WORDS
 ========
 
-This is my implementation of a cryptogram solver based on the Simon Jansen algorithm.
+This is my implementation of a cryptogram solver,
 It will only work with simple-substitution ciphers (aka aristocrats).
+
+CREDIT
+======
+Cryptograms and how to solve them was explained to me by Simon Jansen.  This code is based
+on that.
 
 COMPATABILITY
 =============
-Pure standard python, no extra packages needed.  Tested with Python 3.7.  Other 
-Python versions > 3.4 may work.
+Pure standard python, no extra packages needed.  Tested with Python 3.7.  Other Python 
+versions > 3.4 may work.
 
 WSBUILD
 =======
-First you need to build a catalog file from a word list.  Sometimes a short word list 
-of common words is useful, sometimes a long list like /usr/share/dict/words works better.
+First you need to build a catalog file from a word list.  Sometimes a short word list of 
+common words is useful, sometimes a long list like /usr/share/dict/words works better.
 
 Here's some sources of words that I have found:
  - https://gist.github.com/deekayen/4148741
@@ -35,8 +40,8 @@ e.g.  ./wssolve.py catalog.db
 It will prompt you to enter the cryptogram.  Punctuation can be entered and will be
 ignored, except that contractions with ' are accepted as valid words.
 
-Next it will prompt for any known letters.  These can be entered in one of two
-possible formats:
+Next it will prompt for any known letters.  These can be entered in one of two possible 
+formats:
 
 1. Letter pairs: e.g. X=E M=J etc
 
