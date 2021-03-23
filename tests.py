@@ -255,9 +255,6 @@ class TestSolverPrepare(unittest.TestCase):
         self.assertEqual(oynpx.links, [("n", jnf)])
 
 class TestSolverFilter(unittest.TestCase):
-    def setUp(self):
-        pass
-
     def testFilterWithWords(self):
         solver = Solver(Catalog(), "edb bc abcd", "")
         solver.words[0].guesses = ["ula", "uta", "uti"]
@@ -270,7 +267,7 @@ class TestSolverFilter(unittest.TestCase):
         self.assertEqual(guess, ["uta", "as", "mast"])
 
     def testFilterGuesses(self):
-        solver = Solver(self.cat, "gur yvggyr xvggra jnf oynpx", "")
+        solver = Solver(Catalog(), "gur yvggyr xvggra jnf oynpx", "")
         word1 = Word("oynpx")
         word1.guesses = ["black", "clunk", "plumb", "block", "flask", "slunk", "clank"]
         word2 = Word("jnf")

@@ -321,7 +321,7 @@ class Solver:
             glob = word.glob(self.cipher)
             word.count = self.cat.count(word.pattern, glob)
             if word.count == 1:   # too easy
-                word.guesses = self.cat.words(word.pattern)
+                word.guesses = self.cat.words(word.pattern, glob)
                 self.cipher.process(word.crypted, word.guesses)
         words = deque(sorted(self.words, key=attrgetter("count")))
         for n in range(len(words)):
