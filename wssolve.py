@@ -225,6 +225,7 @@ class Cipher:
                 buffer.write(letter)
         return buffer.getvalue()
 
+
 #---------------------------------------------------------------------------
 class Word:
     def __init__(self, cryptedWord):
@@ -413,20 +414,21 @@ class Solver:
         totalFiltered = 0
         for go in range(10):
             numFilteredWithWords = self._filterWithWords()
-            print("Filtered {} with words in go {}".format(numFilteredWithWords, go))
+            print("Filtered {} words with words in go {}"
+                  .format(numFilteredWithWords, go))
             totalFiltered += numFilteredWithWords
             if numFilteredWithWords:
                 self.cipher.batchProcess(((word.crypted, word.guesses)
                                           for word in self.words
                                           if word.count))
                 numReductions = self.cipher.reduce()
-                print("Reduced {} possibles in go {}".format(numReductions, go))
+                #print("Reduced {} possibles in go {}".format(numReductions, go))
             else:
                 numReductions = 0
             if numReductions:
                 numFilteredWithCipher = self._filterWithCipher()
                 totalFiltered += numFilteredWithWords
-                print("Filtered {} with cipher in go {}"
+                print("Filtered {} words with cipher in go {}"
                       .format(numFilteredWithCipher, go))
             else:
                 break
