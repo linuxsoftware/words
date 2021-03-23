@@ -223,9 +223,9 @@ class TestWord(unittest.TestCase):
 class Catalog:
     def __init__(self, data=None):
         self.data = data or {}
-    def count(self, pattern, glob=None):
-        return len(self.words(pattern))
-    def words(self, pattern, glob=None):
+    def count(self, pattern, glob):
+        return len(self.words(pattern, glob))
+    def words(self, pattern, glob):
         pattern = str(pattern)
         return self.data.get(pattern, [pattern]*9)
 

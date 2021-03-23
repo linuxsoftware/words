@@ -69,19 +69,17 @@ class Catalog:
         self.curs.execute("insert or ignore into words values (?, ?)",
                           (word, pattern))
 
-    def count(self, pattern, glob=None):
+    def count(self, pattern, glob):
         rows = self._query("count(*)", pattern, glob)
         return rows[0][0]
 
-    def words(self, pattern, glob=None):
+    def words(self, pattern, glob):
         rows = self._query("word", pattern, glob)
         return [row[0] for row in rows]
 
     def _query(self, select, pattern, glob):
         pattern = str(pattern)
-        if glob and all(goo == '?' for goo in glob):
-            glob = None
-        if glob:
+        if any(goo != '?' for goo in glob):
             qry = "select {} from words where pattern=? and word glob ?" \
                     .format(select)
             args = (pattern, glob)

@@ -104,23 +104,34 @@ class Letters:
 class Cipher:
     def __init__(self, crypted, decrypted=""):
         self.map = {}
+        processed = set()
         for cipherLetter, plainLetter in zip_longest(crypted, decrypted):
-            if cipherLetter.islower() and cipherLetter not in self.map:
+            if cipherLetter.islower() and cipherLetter not in processed:
                 if plainLetter is not None and plainLetter.islower():
                     self.map[cipherLetter] = Letters(plainLetter)
+                    processed.add(cipherLetter)
                 else:
                     self.map[cipherLetter] = Letters.all()
         if decrypted:
             self.reduce()
 
     def __repr__(self):
+        assignments = []
+        for cipherLetter, possibles in sorted(self.map.items()):
+            assignments.append("{}={}".format(cipherLetter,
+                                              possibles.glob()))
+        return "Cipher {}".format(", ".join(assignments));
+
+    def _debug(self):
         letters = []
         globs = []
         for cipherLetter, possibles in self.map.items():
             letters.append(cipherLetter)
             globs.append(possibles.glob())
-        return "Cipher {}->{}".format("".join(letters),
+        ciph = "Cipher {}->{}".format("".join(letters),
                                       "".join(globs))
+        print(ciph)
+        return ciph
 
     def keys(self):               return self.map.keys()
     def values(self):             return self.map.values()
@@ -135,10 +146,8 @@ class Cipher:
         processed = set()
         for (crypted, possibleDecrypts) in cryptedWords:
             for i, cipherLetter in enumerate(crypted):
-                if cipherLetter in processed:
-                    continue  # only process the same letter once
-                processed.add(cipherLetter)
-                if cipherLetter.islower():
+                if cipherLetter.islower() and cipherLetter not in processed:
+                    processed.add(cipherLetter)
                     possibles = self.map[cipherLetter]
                     possibles.clear()
                     for guess in possibleDecrypts:
@@ -289,8 +298,9 @@ class Solver:
             kIdx = known.index('=')
             cIdx = crypted.index('=')
         if kIdx and (kIdx != cIdx):
-            for assignment in re.findall(r"([a-z])=([a-z])", known):
-                kMap[assignment[0]] = assignment[1]
+            for assignment in re.findall(r"([a-z]+)=([a-z]+)", known):
+                for cipherLetter, plainLetter in zip(*assignment):
+                    kMap[cipherLetter] = plainLetter
             for i in range(cLen):
                 cipherLetter = crypted[i]
                 if cipherLetter.islower() or cipherLetter == "'":
