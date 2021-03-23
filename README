@@ -43,7 +43,7 @@ ignored, except that contractions with ' are accepted as valid words.
 Next it will prompt for any known letters.  These can be entered in one of two possible
 formats:
 
-1. Letter pairs: e.g. X=E M=J etc
+1. Letter assignments: e.g. M=J NBI=THE etc
 
 2. Valid text matching letter for letter with the cryptogram above.  Use spaces for the
    letters that are not known.
