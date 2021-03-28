@@ -12,6 +12,7 @@ from pathlib import Path
 from pprint import pprint
 import re
 import readline
+import atexit
 from wsutils import Pattern, Catalog
 
 #---------------------------------------------------------------------------
@@ -324,7 +325,12 @@ class Solver:
 
     def solve(self):
         self.prepare()
+        #self._debug()
+        #self.cipher._debug()
         self.match()
+        self._debug()
+        self.cipher._debug()
+        #self._printColumns()
         self.filter()
 
     def prepare(self):
@@ -528,11 +534,23 @@ class Solver:
 
     def _debug(self):
         print(self.crypted)
-        for word1 in self.words:
+        visited = {self.root}
+        queue   = deque([(0, self.root)])
+        while queue:
+            depth, word1 = queue.popleft()
+            if depth:
+                spaces = "  " * depth
+                print(spaces+" -> ", end='')
             print(word1)
-            pprint(word1.guesses)
-            for (letters, word2) in word1.links:
-                print("  {} -> {}".format(letters, word2.crypted))
+            for letters, word2 in word1.links:
+                depth += 1
+                if word2 not in visited:
+                    visited.add(word2)
+                    queue.append((depth, word2))
+        print()
+        for word1 in self.unlinked:
+            print(word1)
+            #pprint(word1.guesses)
         print("")
 
     def print(self):
@@ -572,6 +590,11 @@ class Solver:
 
 
 #---------------------------------------------------------------------------
+def saveHistory(prev_h_len, histfile):
+    new_h_len = readline.get_current_history_length()
+    readline.set_history_length(1000)
+    readline.append_history_file(new_h_len - prev_h_len, histfile)
+
 def main():
     if len(sys.argv) != 2:
         print("usage: wssolve CATALOG-FILE")
@@ -580,6 +603,14 @@ def main():
     if not path.is_file():
         print("File %s not found")
         sys.exit(1)
+    histfile = Path.home() / ".wssolve_history"
+    try:
+        readline.read_history_file(histfile)
+        h_len = readline.get_current_history_length()
+    except FileNotFoundError:
+        open(histfile, 'wb').close()
+        h_len = 0
+    atexit.register(saveHistory, h_len, histfile)
 
     cryptogram = input("Enter the cryptogram:    ").lower()
     known      = input("Enter any known letters: ").lower()
