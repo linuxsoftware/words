@@ -283,7 +283,9 @@ class Solver:
     def __init__(self, catalog, crypted, known):
         cryptedLetters, knownLetters = self._parse(crypted, known)
         cryptedWords = re.findall(r"[a-z']+", crypted)
-        uniqueWords  = Counter(cryptedWords).keys()
+        # using Counter instead of set maintains order which makes the
+        # unittests simpler, otherwise set would work just fine
+        uniqueWords  = Counter(cryptedWords)
         self.cat          = catalog
         self.cryptedWords = cryptedWords
         self.words        = [Word(word) for word in uniqueWords]
@@ -423,6 +425,7 @@ class Solver:
 
     def filter(self):
         totalFiltered = 0
+        # FIXME if a word becomes unsolvable remove it and start again
         for go in range(10):
             numFilteredWithWords = self._filterWithWords()
             print("Filtered {} words with words in go {}"
