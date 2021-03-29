@@ -328,8 +328,8 @@ class Solver:
         #self._debug()
         #self.cipher._debug()
         self.match()
-        self._debug()
-        self.cipher._debug()
+        #self._debug()
+        #self.cipher._debug()
         #self._printColumns()
         self.filter()
 
@@ -554,9 +554,8 @@ class Solver:
         print("")
 
     def print(self):
-        print(self.crypted)
         print(self.cipher)
-        print()
+        print(self.crypted)
         print(self.decrypt())
         self._printColumns()
         #self._printProduct()
@@ -590,11 +589,6 @@ class Solver:
 
 
 #---------------------------------------------------------------------------
-def saveHistory(prev_h_len, histfile):
-    new_h_len = readline.get_current_history_length()
-    readline.set_history_length(1000)
-    readline.append_history_file(new_h_len - prev_h_len, histfile)
-
 def main():
     if len(sys.argv) != 2:
         print("usage: wssolve CATALOG-FILE")
@@ -612,12 +606,23 @@ def main():
         h_len = 0
     atexit.register(saveHistory, h_len, histfile)
 
-    cryptogram = input("Enter the cryptogram:    ").lower()
-    known      = input("Enter any known letters: ").lower()
+    cryptogram = cleanInput("Enter the cryptogram:    ")
+    known      = cleanInput("Enter any known letters: ")
     with closing(Catalog(path)) as cat:
         solver = Solver(cat, cryptogram, known)
         solver.solve()
         solver.print()
+
+def cleanInput(prompt):
+    text = input(prompt)
+    text = text.lower()
+    text = text.replace("’", "'")
+    return text
+
+def saveHistory(prev_h_len, histfile):
+    new_h_len = readline.get_current_history_length()
+    readline.set_history_length(1000)
+    readline.append_history_file(new_h_len - prev_h_len, histfile)
 
 if __name__ == "__main__":
     main()
