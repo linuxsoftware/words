@@ -77,7 +77,6 @@ BUGS/TO DO
 Automatically try different catalogs
 Drop words and backtrack when matching or filtering gives no solution
 Run multiple attempts starting on different words
-Solve duplicated words together
 Option to brute force cipher
 More tests
 

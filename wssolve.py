@@ -3,7 +3,7 @@
 #---------------------------------------------------------------------------
 
 import sys
-from collections import deque
+from collections import deque, Counter
 from contextlib import closing, suppress
 from itertools import chain, groupby, product, zip_longest
 from io import StringIO
@@ -281,14 +281,15 @@ class Word:
 #---------------------------------------------------------------------------
 class Solver:
     def __init__(self, catalog, crypted, known):
-        self.cat       = catalog
-        cryptedWords   = re.findall(r"[a-z']+", crypted)
-        self.crypted   = " ".join(cryptedWords)
-        self.words     = [Word(word) for word in cryptedWords]
         cryptedLetters, knownLetters = self._parse(crypted, known)
-        self.cipher    = Cipher(cryptedLetters, knownLetters)
-        self.root      = None
-        self.unlinked  = []
+        cryptedWords = re.findall(r"[a-z']+", crypted)
+        uniqueWords  = Counter(cryptedWords).keys()
+        self.cat          = catalog
+        self.cryptedWords = cryptedWords
+        self.words        = [Word(word) for word in uniqueWords]
+        self.cipher       = Cipher(cryptedLetters, knownLetters)
+        self.root         = None
+        self.unlinked     = []
 
     def _parse(self, crypted, known):
         cLen = len(crypted)
@@ -322,6 +323,10 @@ class Solver:
     @property
     def solved(self):
         return all(word.solved for word in self.words)
+
+    @property
+    def crypted(self):
+        return " ".join(self.cryptedWords)
 
     def solve(self):
         self.prepare()
@@ -561,15 +566,15 @@ class Solver:
         #self._printProduct()
 
     def _printColumns(self):
+        wordMap = {word.crypted: word for word in self.words}
+        words  = [wordMap[crypted] for crypted in self.cryptedWords]
         height = max((len(word.guesses) for word in self.words))
-        spaces = [" " * len(word.crypted) for word in self.words]
         for y in range(height):
-            for x in range(len(self.words)):
-                word = self.words[x]
+            for word in words:
                 if y < len(word.guesses):
                     guess = word.guesses[y]
                 else:
-                    guess = spaces[x]
+                    guess = " " * len(word.crypted)
                 print(guess+" ", end='')
             print()
             if (y+1) % 40 == 0:
