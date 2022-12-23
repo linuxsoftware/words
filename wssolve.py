@@ -14,6 +14,16 @@ import re
 import readline
 import atexit
 from wsutils import Pattern, Catalog
+from time import perf_counter_ns
+
+#---------------------------------------------------------------------------
+def tictocDo(func, name, *args, **kwargs):
+    tic = perf_counter_ns()
+    retval = func(*args, **kwargs)
+    toc = perf_counter_ns()
+    duration = (toc - tic) / 10**9
+    print(f"{name:<42} took {duration:>2.4f}S")
+    return retval
 
 #---------------------------------------------------------------------------
 class Letters:
@@ -103,7 +113,7 @@ class Letters:
 
 #---------------------------------------------------------------------------
 class Cipher:
-    def __init__(self, crypted, decrypted=""):
+    def __init__(self, crypted, decrypted="", noLetterToItself=False):
         self.map = {}
         processed = set()
         for cipherLetter, plainLetter in zip_longest(crypted, decrypted):
@@ -112,7 +122,10 @@ class Cipher:
                     self.map[cipherLetter] = Letters(plainLetter)
                     processed.add(cipherLetter)
                 else:
-                    self.map[cipherLetter] = Letters.all()
+                    letters = Letters.all()
+                    if noLetterToItself:
+                        letters.unset(cipherLetter)
+                    self.map[cipherLetter] = letters
         if decrypted:
             self.reduce()
 
@@ -277,7 +290,11 @@ class Word:
         shared = self.cryptedLetters & word2.cryptedLetters
         return "".join(sorted(shared))
 
-
+#---------------------------------------------------------------------------
+#class SolveAttempt:
+#    def __init__(self, words):
+#        self.words = words
+#
 #---------------------------------------------------------------------------
 class Solver:
     def __init__(self, catalog, crypted, known):
@@ -289,7 +306,8 @@ class Solver:
         self.cat          = catalog
         self.cryptedWords = cryptedWords
         self.words        = [Word(word) for word in uniqueWords]
-        self.cipher       = Cipher(cryptedLetters, knownLetters)
+        self.cipher       = Cipher(cryptedLetters, knownLetters,
+                                   noLetterToItself=True)
         self.root         = None
         self.unlinked     = []
 
@@ -348,17 +366,24 @@ class Solver:
                 word.guesses = self.cat.words(word.pattern, glob)
                 self.cipher.process(word.crypted, word.guesses)
         words = deque(sorted(self.words, key=attrgetter("count")))
+        bestSort = (len(words)+1, [])
         for n in range(len(words)):
             self._buildTree(words)
-            # try for no more than 2 unlinked words
-            if len(self.unlinked) < 3:
+            unlinkedCount = len(self.unlinked)
+            if unlinkedCount == 0:
                 break
+            elif unlinkedCount < bestSort[0]:
+                bestSort = (unlinkedCount, deque(words))
+            # try for no more than 2 unlinked words
+            #if len(self.unlinked) < 3:
+            #    break
             for word in words:
                 word.links = []
             words.rotate(-1)
         else:
             # back at the beginning
-            self._buildTree(self.words)
+            self._buildTree(bestSort[1])
+            #self._buildTree(self.words)
 
     def _buildTree(self, words):
         others  = list(words)
@@ -436,7 +461,7 @@ class Solver:
                                           for word in self.words
                                           if word.count))
                 numReductions = self.cipher.reduce()
-                #print("Reduced {} possibles in go {}".format(numReductions, go))
+                print("Reduced {} cipher possibles in go {}".format(numReductions, go))
             else:
                 numReductions = 0
             if numReductions:
@@ -618,7 +643,7 @@ def main():
     known      = cleanInput("Enter any known letters: ")
     with closing(Catalog(path)) as cat:
         solver = Solver(cat, cryptogram, known)
-        solver.solve()
+        tictocDo(solver.solve, "solver.solve")
         solver.print()
 
 def cleanInput(prompt):
